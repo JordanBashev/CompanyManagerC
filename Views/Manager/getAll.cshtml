@@ -1,0 +1,98 @@
+﻿@model CompanyManagerC.Models.TableView<CompanyManagerC.Models.Manager>
+
+@{
+    ViewData["Title"] = "Managers";
+}
+
+<h1>Managers</h1>
+
+<p>
+    <a asp-action="Create">Assign new Manager</a>
+</p>
+<form asp-action="getAll" method="post">
+    <div class="input-group rounded">
+        <input type="search" id="myInput" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+        <span class="input-group-text border-0" id="search-addon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"> <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" /> </svg>
+        </span>
+    </div>
+    <table id="myTable" class="table">
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>yearsOfExperience</th>
+                <th>salary</th>
+                <th>createdOn</th>
+                <th>removedOn</th>
+                <th>options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.itemList)
+            {
+                <tr>
+                    <td>
+                        @item.name
+                    </td>
+                    <td>
+                        @item.yearsOfExperience
+                    </td>
+                    <td>
+                        @item.salary
+                    </td>
+                    <td>
+                        @item.createdOn
+                    </td>
+                    <td>
+                        @item.removedOn
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <table cellpadding="0" cellspacing="0">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.PageCount; i++)
+            {
+                <li class="page-item">
+                    @if (i != Model.CurrentPageIndex)
+                    {
+                        <a class="page-link" href="javascript:PagerClick(@i);">@i</a>
+                    }
+                    else
+                    {
+                        <span class="page-link">@i</span>
+                    }
+                </li>
+            }
+        </ul>
+    </table>
+    <input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" />
+</form>
+<script type="text/javascript">
+    function PagerClick(index) {
+        document.getElementById("hfCurrentPageIndex").value = index;
+        document.forms[0].submit();
+    }
+
+    function filterTable(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstCol = rows[i].cells[0].textContent.toUpperCase();
+            if (firstCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+</script>

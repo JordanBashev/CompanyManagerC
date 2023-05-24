@@ -11,7 +11,7 @@ namespace CompanyManagerC.Controllers
 {
     public class HomeController : Controller
     {
-        public Test test = new Test();
+        public Worker<LoginModel> test = new Worker<LoginModel>();
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
@@ -27,38 +27,16 @@ namespace CompanyManagerC.Controllers
         [HttpGet]
         public IActionResult Privacy()
         {
-            var result = test.GetProductAsync("api/base/GetAll").Result;
-            if (result == null)
-                return Problem("Contact The Support Team");
-
-            ViewData["data"] = result;
-
             return View();
         }
 
         [HttpPost]
-        public IActionResult Login(string username, string password)
+        public IActionResult Login(LoginModel data)
         {
-            var result = test.Authenticate(username, password, "api/base").Result;
+            var result = test.Authenticate(data, "api/base").Result;
 
             if( result != HttpStatusCode.OK)
                 return Unauthorized();
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
-        public IActionResult CreateManager() 
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult CreateManager(Manager manager)
-        {
-            var result = test.createManager(manager, "api/base/Post");
-
-            Console.WriteLine(result.Result);
 
             return RedirectToAction(nameof(Index));
         }
